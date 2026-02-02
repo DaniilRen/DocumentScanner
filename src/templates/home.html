@@ -3,20 +3,39 @@
 {% block title %}Home page{% endblock %}
 
 {% block content %} 
-  <div id="upload-section">
-    <form id="upload-form" enctype="multipart/form-data">
-      <input type="file" id="file-input" name="file" accept=".docx,.pdf" style="display:none;">
-      <input type="text" id="keywords-input" name="keywords" placeholder="python,flask" style="width:200px;">
-      <button type="button" id="upload-btn" class="btn btn-info" onclick="document.getElementById('file-input').click()">
-        📁 Upload File
-      </button>
-      <button type="button" id="scan-btn" class="btn btn-success" onclick="scanFile()">
-        🔍 Scan Document
-      </button>
-      <p id="file-status" style="margin-top:10px;"></p>
-    </form>
-    
-    <div id="results" style="margin-top:20px;"></div>
+  	<header>
+      <h2>Поиск по ключевым словам</h2>
+	</header>
+
+  <div id="main-container">
+    <div id="tools">
+      <form id="upload-form" enctype="multipart/form-data">
+        <input type="file" id="file-input" name="file" accept=".docx,.pdf" style="display:none;">
+        <button type="button" id="upload-btn" class="btn btn-info" onclick="document.getElementById('file-input').click()">
+          📁 Загрузить файл
+        </button>
+        <button type="button" id="scan-btn" class="btn btn-success" onclick="scanFile()">
+          🔍 Поиск
+        </button>
+        <p id="file-status"></p>
+      </form>
+      <div id="keywords">
+        <div class="input-holder">
+          <input type="text" class="keyword-input" name="keywords" placeholder="python">
+          <button class="find-btn">🔍</button>
+        </div>
+        <div class="input-holder">
+          <input type="text" class="keyword-input" name="keywords" placeholder="python">
+          <button class="find-btn">🔍</button>
+        </div>
+      </div>
+    </div>
+    <div id="result">
+      <div class="arrow-placeholder"></div>
+      <div id="text-container">
+      </div>
+      <div class="arrow-placeholder"></div>
+    </div>
   </div>
 {% endblock %}
 

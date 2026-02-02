@@ -6,7 +6,7 @@ $(document).ready(function() {
     const $uploadBtn = $('#upload-btn');
     const $scanBtn = $('#scan-btn');
     const $status = $('#file-status');
-    const $results = $('#results');
+    const $results = $('#text-container');
     
     $fileInput.on('change', function() {
         if (this.files.length) {
@@ -31,7 +31,7 @@ $(document).ready(function() {
             success: function(data) {
                 if (data.success) {
                     currentFilename = data.filename;
-                    $status.html(`✅ <strong>Uploaded:</strong> ${originalFilename}`);
+                    $status.html(`✅ <strong>Загружено:</strong> ${originalFilename}`);
                     $scanBtn.prop('disabled', false);
                 } else {
                     $status.html(`❌ <strong>Error:</strong> ${data.error}`);
@@ -41,13 +41,13 @@ $(document).ready(function() {
                 }
             },
             error: function() {
-                $status.html('❌ <strong>Upload failed!</strong>');
+                $status.html('❌ <strong>Ошибка загрузки!</strong>');
                 currentFilename = null;
                 originalFilename = null;
                 $scanBtn.prop('disabled', true);
             },
             complete: function() {
-                $uploadBtn.text('📁 Upload File').prop('disabled', false);
+                $uploadBtn.text('📁 Загрузить файл').prop('disabled', false);
             }
         });
     }
@@ -57,7 +57,12 @@ $(document).ready(function() {
         
         const formData = new FormData();
         formData.append('filename', currentFilename);
-        formData.append('keywords', $('#keywords-input').val());
+        const keywordsArray = $('.keyword-input').map(function() {
+            return $(this).val();
+        }).get();
+
+        formData.append('keywords', keywordsArray.join(','));
+
         
         $scanBtn.text('Scanning...').prop('disabled', true);
         $results.html('<p><em>Processing document...</em></p>');
@@ -70,7 +75,7 @@ $(document).ready(function() {
             contentType: false,
             success: function(data) {
                 if (data.success) {
-                    let html = '<h3>📊 Scan Results</h3>';
+                    let html = '';
                     let hasResults = false;
                     
                     $.each(data.results, function(keyword, paragraphs) {
@@ -90,16 +95,16 @@ $(document).ready(function() {
                     }
                     
                     $results.html(html);
-                    $status.html(`✅ <strong>Ready:</strong> ${originalFilename} - Change keywords and scan again`);
+                    $status.html(`✅ <strong>Готово:</strong> ${originalFilename}`);
                 } else {
                     $results.html(`<p class="error">❌ ${data.error}</p>`);
                 }
             },
             error: function() {
-                $results.html('<p class="error">❌ Scan failed!</p>');
+                $results.html('<p class="error">❌ Ошибка поиска!</p>');
             },
             complete: function() {
-                $scanBtn.text('🔍 Scan Document').prop('disabled', false);
+                $scanBtn.text('🔍 Поиск').prop('disabled', false);
             }
         });
     }
