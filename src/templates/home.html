@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}Home page{% endblock %}
+
+{% block content %} 
+  <div id="upload-section">
+    <form id="upload-form" enctype="multipart/form-data">
+      <input type="file" id="file-input" name="file" accept=".docx,.pdf" style="display:none;">
+      <input type="text" id="keywords-input" name="keywords" placeholder="python,flask" style="width:200px;">
+      <button type="button" id="upload-btn" class="btn btn-info" onclick="document.getElementById('file-input').click()">
+        📁 Upload File
+      </button>
+      <button type="button" id="scan-btn" class="btn btn-success" onclick="scanFile()">
+        🔍 Scan Document
+      </button>
+      <p id="file-status" style="margin-top:10px;"></p>
+    </form>
+    
+    <div id="results" style="margin-top:20px;"></div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/scanner.js') }}"></script>
+{% endblock %}

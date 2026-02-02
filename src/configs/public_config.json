@@ -1,0 +1,5 @@
+{
+	"SECRET_KEY": "siduyghfosi8duyyf827tgr87gt3o87f73g",
+	"STORAGE": "storage",
+	"MAX_CONTENT_LENGTH": 16
+}
