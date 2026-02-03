@@ -36,13 +36,16 @@ def scan_file():
 	
 	filepath = os.path.join(current_app.config['STORAGE'], filename)
 	if not os.path.exists(filepath):
-			return jsonify({'error': 'File not found'}), 400
+		return jsonify({'error': 'File not found'}), 400
 	
 	if filename.endswith('.docx'):
-			scanner = DocxScanner(filepath, keywords)
-			results = scanner.process_data()
+		doc_format = 'DOCX'
+		scanner = DocxScanner(filepath, keywords)
+		results = scanner.process_data()
 	else:
-			scanner = PDFScanner(filepath, keywords)
-			results = scanner.process_data()
+		doc_format = 'PDF'
+		scanner = PDFScanner(filepath, keywords)
+		results = scanner.process_data()
 	
+	print(f"format = {doc_format}; {[f'{k}: {len(val)}' for k, val in results.items()]}")
 	return jsonify({'success': True, 'results': results})

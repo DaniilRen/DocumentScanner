@@ -3,10 +3,6 @@
 {% block title %}Home page{% endblock %}
 
 {% block content %} 
-  	<header>
-      <h2>Поиск по ключевым словам</h2>
-	</header>
-
   <div id="main-container">
     <div id="tools">
       <form id="upload-form" enctype="multipart/form-data">
@@ -17,24 +13,28 @@
         <button type="button" id="scan-btn" class="btn btn-success" onclick="scanFile()">
           🔍 Поиск
         </button>
+				<button type="button" id="clean-btn" class="btn btn-clean" onclick="Clean()">
+          🗑️ Очистить
+        </button>
         <p id="file-status"></p>
       </form>
       <div id="keywords">
         <div class="input-holder">
-          <input type="text" class="keyword-input" name="keywords" placeholder="python">
+          <input type="text" class="keyword-input" name="keywords">
           <button class="find-btn">🔍</button>
+					<div class="counter">0</div>
         </div>
         <div class="input-holder">
-          <input type="text" class="keyword-input" name="keywords" placeholder="python">
+          <input type="text" class="keyword-input" name="keywords">
           <button class="find-btn">🔍</button>
+					<div class="counter">0</div>
         </div>
       </div>
     </div>
     <div id="result">
-      <div class="arrow-placeholder"></div>
-      <div id="text-container">
-      </div>
-      <div class="arrow-placeholder"></div>
+      <!-- <div class="arrow-placeholder"></div> -->
+      <div id="text-container"></div>
+      <!-- <div class="arrow-placeholder"></div> -->
     </div>
   </div>
 {% endblock %}
