@@ -16,16 +16,30 @@
 				<button type="button" id="clean-btn" class="btn btn-clean" onclick="Clean()">
           🗑️ Очистить
         </button>
+        <button type="button" id="add-btn" class="btn btn-add" onclick="addField()">
+          ➕ Добавить поле
+        </button>
+        <button type="button" id="shutdown-btn" class="btn-shutdown" onclick="shutdownApp()">
+          ✖ Закрыть
+        </button>
         <p id="file-status"></p>
       </form>
       <div id="keywords">
         <div class="input-holder">
           <input type="text" class="keyword-input" name="keywords">
+					<button class="remove-btn">⛌</button>
           <button class="find-btn">🔍</button>
 					<div class="counter">0</div>
         </div>
         <div class="input-holder">
           <input type="text" class="keyword-input" name="keywords">
+					<button class="remove-btn">⛌</button>
+          <button class="find-btn">🔍</button>
+					<div class="counter">0</div>
+        </div>
+				<div class="input-holder">
+          <input type="text" class="keyword-input" name="keywords">
+					<button class="remove-btn">⛌</button>
           <button class="find-btn">🔍</button>
 					<div class="counter">0</div>
         </div>
@@ -40,5 +54,8 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="{{ url_for('static', filename='js/scanner.js') }}"></script>
+<script src="{{ url_for('static', filename='js/state.js') }}"></script>
+<script src="{{ url_for('static', filename='js/ui-utils.js') }}"></script>
+<script src="{{ url_for('static', filename='js/api-handlers.js') }}"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
 {% endblock %}

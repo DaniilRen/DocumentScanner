@@ -5,7 +5,8 @@
     --gray: #c5c5c5;
 		--dark-gray: #00000052;
     --black: #000000;
-    --red: #e74c3c;
+    --red: #ca3d2e;
+		--dark-red: #721c24;
     --blue: #22bbf7;
     --light-yellow: #fff3cd;
 		--dark-yellow: #856404;
@@ -52,6 +53,8 @@ header {
     padding: 30px 20px;
     background-color: var(--gray);
 		border-right: 2px solid #0000002f;
+		max-height: 95vh;
+    overflow-y: auto;
 }
 
 #upload-form {
@@ -108,7 +111,7 @@ header {
 .input-holder {
     display: grid;
 		max-width: 100%;
-		grid-template-columns: 70% 10% 10%;
+		grid-template-columns: 60% 10% 10% 10%;
     justify-content: space-between;
     align-items: center;
 }
@@ -122,6 +125,26 @@ header {
 	color: white;
 	text-align: center;
 	font-weight: bold;
+}
+
+.remove-btn {
+	color: var(--white);
+    background-color: var(--red);
+		border: 1px solid var(--white);
+		border-radius: var(--default-radius);
+    min-width: 30px;
+    aspect-ratio: 1;
+}
+
+.remove-btn:active {
+	scale: 0.9;
+	border: 1	px solid var(--dark-red)
+}
+
+.remove-btn.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
 }
 
 .find-btn {
@@ -187,13 +210,44 @@ header {
 }
 
 .btn-clean {
-    background: linear-gradient(45deg, #ffb109, #ddc01b);
+    background: linear-gradient(45deg, #ff4209, #d38c3a);
     color: white;
 }
 
 .btn-clean:hover:not(:disabled) {
     transform: translateY(-2px);
     box-shadow: 0 10px 20px rgba(243, 187, 33, 0.4);
+}
+
+.btn-add {
+	background: linear-gradient(45deg, #ffb109, #ddc01b);
+    color: white;
+}
+
+.btn-add:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(243, 187, 33, 0.4);
+}
+
+.btn-shutdown {
+	position: fixed;
+	top: 10px;
+	right: 10px;
+	border: none;
+	padding: 8px 16px;
+	border-radius: 10px;
+	font-size: 16px;
+	font-weight: 600;
+	background: linear-gradient(45deg, #7c0c0c, #ce330c);
+	color: white;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	text-transform: uppercase;
+}
+
+.btn-shutdown:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px var(--dark-red);
 }
 
 .btn:disabled {
@@ -255,7 +309,7 @@ header {
 
 .error {
     background: #f8d7da;
-    color: #721c24;
+    color: var(--dark-red);
     border: 1px solid #f5c6cb;
 }
 

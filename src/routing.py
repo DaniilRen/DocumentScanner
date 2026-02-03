@@ -2,6 +2,7 @@ from flask import render_template, g, Blueprint, request, current_app, jsonify
 from lib.utils import allowed_file, random_filename
 from lib.scan import DocxScanner, PDFScanner
 import os
+import threading
 
 
 bp = Blueprint('routing', __name__)
@@ -49,3 +50,21 @@ def scan_file():
 	
 	print(f"format = {doc_format}; {[f'{k}: {len(val)}' for k, val in results.items()]}")
 	return jsonify({'success': True, 'results': results})
+
+
+@bp.route('/api/shutdown', methods=['POST'])
+def shutdown():
+	"""
+	Stop the running process from an HTTP call.
+	We avoid Werkzeug internals and just exit the process shortly after
+	sending the HTTP response so the EXE can terminate reliably.
+	"""
+	def _delayed_exit():
+		import time
+		import os as _os
+
+		time.sleep(0.5)
+		_os._exit(0)
+
+	threading.Thread(target=_delayed_exit, daemon=True).start()
+	return jsonify({"success": True})
