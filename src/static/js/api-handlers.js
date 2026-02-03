@@ -37,10 +37,10 @@ function updateCounters(results) {
         const keyword = $inputHolder.find('.keyword-input').val().trim();
         const $counter = $inputHolder.find('.counter');
         if (keyword && results[keyword]) {
-            $counter.css('background-color', results[keyword].length === 0 ? 'var(--red)' : 'var(--light-green)')
+            $counter.css('background-color', results[keyword].length === 0 ? 'var(--pale-gray)' : 'var(--blue)')
                    .text(results[keyword].length);
         } else {
-            $counter.css('background-color', 'var(--red)').text('0');
+            $counter.css('background-color', 'var(--pale-gray)').text('0');
         }
     });
 }

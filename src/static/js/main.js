@@ -16,7 +16,7 @@ $(document).ready(function() {
     // Clean function
     window.Clean = function() {
         $('.keyword-input').val('');
-        $('.counter').text('0').css('background-color', 'var(--red)');
+        $('.counter').text('0').css('background-color', 'var(--pale-gray)');
         $('#file-status').html(currentFilename ? `✅ <strong>Загружено:</strong> ${originalFilename}` : '');
         $('#scan-btn').prop('disabled', !currentFilename);
         updateRemoveButtons();
@@ -26,9 +26,9 @@ $(document).ready(function() {
     window.addField = function() {
         $('#keywords').append(`
             <div class="input-holder">
-                <input type="text" class="keyword-input" name="keywords">
+                <input type="text" class="keyword-input" name="keywords" placeholder="ключевое слово">
                 <button class="remove-btn">⛌</button>
-                <button class="find-btn">🔍</button>
+                <button class="find-btn">➡️</button>
                 <div class="counter">0</div>
             </div>
         `);

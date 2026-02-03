@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Home page{% endblock %}
+{% block title %}Поиск по документу{% endblock %}
 
 {% block content %} 
   <div id="main-container">
@@ -17,38 +17,36 @@
           🗑️ Очистить
         </button>
         <button type="button" id="add-btn" class="btn btn-add" onclick="addField()">
-          ➕ Добавить поле
+          ╋ Добавить поле
         </button>
         <button type="button" id="shutdown-btn" class="btn-shutdown" onclick="shutdownApp()">
-          ✖ Закрыть
+          ✖
         </button>
         <p id="file-status"></p>
       </form>
       <div id="keywords">
         <div class="input-holder">
-          <input type="text" class="keyword-input" name="keywords">
+          <input type="text" class="keyword-input" name="keywords" placeholder="ключевое слово">
 					<button class="remove-btn">⛌</button>
-          <button class="find-btn">🔍</button>
+          <button class="find-btn">➡️</button>
 					<div class="counter">0</div>
         </div>
         <div class="input-holder">
-          <input type="text" class="keyword-input" name="keywords">
+          <input type="text" class="keyword-input" name="keywords" placeholder="ключевое слово">
 					<button class="remove-btn">⛌</button>
-          <button class="find-btn">🔍</button>
+          <button class="find-btn">➡️</button>
 					<div class="counter">0</div>
         </div>
 				<div class="input-holder">
-          <input type="text" class="keyword-input" name="keywords">
+          <input type="text" class="keyword-input" name="keywords" placeholder="ключевое слово">
 					<button class="remove-btn">⛌</button>
-          <button class="find-btn">🔍</button>
+          <button class="find-btn">➡️</button>
 					<div class="counter">0</div>
         </div>
       </div>
     </div>
     <div id="result">
-      <!-- <div class="arrow-placeholder"></div> -->
       <div id="text-container"></div>
-      <!-- <div class="arrow-placeholder"></div> -->
     </div>
   </div>
 {% endblock %}
