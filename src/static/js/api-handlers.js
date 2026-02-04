@@ -1,6 +1,11 @@
-function uploadFile() {
+function uploadFile(isAppend) {
     const formData = new FormData();
-    formData.append('file', $('#file-input')[0].files[0]);
+    const files = $('#file-input')[0].files;
+
+    for (let i = 0; i < files.length; i++) {
+        formData.append('files', files[i]);
+    }
+
     $('#upload-btn').text('Uploading...').prop('disabled', true);
     $('#file-status').text('Uploading...');
     
@@ -8,25 +13,65 @@ function uploadFile() {
         url: '/api/upload', type: 'POST', data: formData,
         processData: false, contentType: false,
         success: function(data) {
-            if (data.success) {
-                currentFilename = data.filename;
-                $('#file-status').html(`✅ <strong>Загружено:</strong> ${originalFilename}`);
-                $('#scan-btn').prop('disabled', false);
+            if (data.success && Array.isArray(data.files) && data.files.length > 0) {
+                if (isAppend && currentFiles && currentFiles.length) {
+                    currentFiles = currentFiles.concat(data.files);
+                } else {
+                    currentFiles = data.files;
+                    currentFileIndex = 0;
+                }
+
+                lastScanResults = null;
+                $('#text-container').empty();
+                $('#doc-indicator').text('');
+
+                if (currentFiles.length === 1) {
+                    $('#file-status').html(`✅ <strong>Загружен файл:</strong> ${currentFiles[0].original}`);
+                } else {
+                    const namesPreview = currentFiles
+                        .slice(0, 2)
+                        .map(f => f.original)
+                        .join(', ');
+                    const more = currentFiles.length > 2 ? ` и ещё ${currentFiles.length - 2}` : '';
+                    $('#file-status').html(`✅ <strong>Загружено файлов:</strong> ${currentFiles.length} (${namesPreview}${more})`);
+                }
+
+                renderDocSelector();
+                renderFileList();
+                updateNavButtons();
+                updateScanSummary();
             } else {
-                $('#file-status').html(`❌ <strong>Ошибка:</strong> ${data.error}`);
-                currentFilename = null; originalFilename = null;
-                $('#scan-btn').prop('disabled', true);
-                $('.counter').text('0').css('background-color', 'var(--red)');
+                $('#file-status').html(`❌ <strong>Ошибка:</strong> ${data.error || 'Не удалось загрузить файлы'}`);
+                // Keep existing files if append failed; only clear if there were none
+                if (!currentFiles || !currentFiles.length) {
+                    $('.counter').text('0').css('background-color', 'var(--red)');
+                    $('#text-container').empty();
+                    $('#doc-indicator').text('');
+                    $('#doc-selector').empty().addClass('hidden');
+                    lastScanResults = null;
+                    renderFileList();
+                    updateNavButtons();
+                    updateScanSummary();
+                }
             }
         },
         error: function() {
             $('#file-status').html('❌ <strong>Ошибка загрузки!</strong>');
-            currentFilename = null; originalFilename = null;
-            $('#scan-btn').prop('disabled', true);
-            $('.counter').text('0').css('background-color', 'var(--red)');
+            if (!currentFiles || !currentFiles.length) {
+                currentFiles = [];
+                currentFileIndex = 0;
+                lastScanResults = null;
+                $('.counter').text('0').css('background-color', 'var(--red)');
+                $('#text-container').empty();
+                $('#doc-indicator').text('');
+                $('#doc-selector').empty().addClass('hidden');
+                renderFileList();
+                updateNavButtons();
+                updateScanSummary();
+            }
         },
         complete: function() {
-            $('#upload-btn').text('📁 Загрузить файл').prop('disabled', false);
+            $('#upload-btn').text('📁 Загрузить файлы').prop('disabled', false);
         }
     });
 }
@@ -46,11 +91,22 @@ function updateCounters(results) {
 }
 
 window.scanFile = function() {
-    if (!currentFilename) return;
+    if (!currentFiles || currentFiles.length === 0) {
+        $('#file-status').html('❌ <strong>Нет загруженных файлов.</strong>');
+        return;
+    }
     const formData = new FormData();
-    formData.append('filename', currentFilename);
-    const keywordsArray = $('.keyword-input').map(function() { return $(this).val(); }).get();
-    formData.append('keywords', keywordsArray.join(','));
+    const filenames = currentFiles.map(f => f.stored);
+    formData.append('filenames', JSON.stringify(filenames));
+    const keywordsArray = $('.keyword-input').map(function() { return $(this).val().trim(); }).get();
+    const nonEmptyKeywords = keywordsArray.filter(k => k);
+    if (nonEmptyKeywords.length === 0) {
+        $('#keyword-error').text('Введите хотя бы одно ключевое слово.');
+        updateScanSummary();
+        return;
+    }
+    $('#keyword-error').text('');
+    formData.append('keywords', nonEmptyKeywords.join(','));
     
     $('#scan-btn').text('Поиск...').prop('disabled', true);
     $('#text-container').html('<p><em>Обработка документа...</em></p>');
@@ -59,28 +115,19 @@ window.scanFile = function() {
         url: '/api/scan', type: 'POST', data: formData,
         processData: false, contentType: false,
         success: function(data) {
-            if (data.success) {
-                let html = ''; let hasResults = false;
-                $.each(data.results, function(keyword, paragraphs) {
-                    if (paragraphs.length > 0) {
-                        hasResults = true;
-                        html += `<h4>"${keyword}": <span class="badge">${paragraphs.length} совпадений</span></h4><ul class="results-list">`;
-                        $.each(paragraphs, function(i, para) {
-                            html += `<li>${highlightKeywordsInText(para, keyword)}</li>`;
-                        });
-                        html += '</ul>';
-                    }
-                });
-                if (!hasResults) html += '<p class="no-results">Результаты не найдены.</p>';
-                $('#text-container').html(html);
-                $('#file-status').html(`✅ <strong>Готово:</strong> ${originalFilename}`);
-                updateCounters(data.results);
+            if (data.success && data.results) {
+                lastScanResults = data.results;
+                renderCurrentDocumentResults();
             } else {
-                $('#text-container').html(`<p class="error">❌ ${data.error}</p>`);
+                $('#text-container').html(`<p class="error">❌ ${data.error || 'Ошибка обработки документов'}</p>`);
+                lastScanResults = null;
+                updateNavButtons();
             }
         },
         error: function() {
             $('#text-container').html('<p class="error">❌ Ошибка поиска!</p>');
+            lastScanResults = null;
+            updateNavButtons();
         },
         complete: function() {
             $('#scan-btn').text('🔍 Поиск').prop('disabled', false);
